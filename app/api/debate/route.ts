@@ -1,12 +1,16 @@
 /**
  * Debate Orchestrator — POST /api/debate
  * Runs the full debate lifecycle: Research → 3 Rounds → Judge Verdict
+ *
+ * Uses prompt engineering for JSON output (Venice doesn't reliably support
+ * OpenAI-style response_format schemas). Robust JSON parser handles
+ * markdown wrapping, partial responses, etc.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { veniceChat, withRetry } from '@/lib/venice';
 import { AGENTS, buildDebatePrompt, buildJudgePrompt } from '@/lib/agents';
-import { DEBATE_ROUND_SCHEMA, JUDGE_VERDICT_SCHEMA, RESEARCH_SUMMARY_SCHEMA } from '@/lib/schemas';
+import { parseJsonResponse } from '@/lib/parseJson';
 import { debateCache } from '@/lib/cache';
 import type { DebateTranscript, DebateRound, Verdict } from '@/types/debate';
 
@@ -41,15 +45,16 @@ export async function POST(request: NextRequest) {
       veniceChat({
         model: researcher.model,
         messages: [
-          { role: 'system', content: researcher.systemPrompt },
+          { role: 'system', content: researcher.systemPrompt + '\n\nOutput ONLY valid JSON. Use this structure: { "current_state": "...", "key_data_points": ["..."], "expert_opinions": ["..."], "recent_trends": "..." }' },
           { role: 'user', content: `Research this prediction topic: ${topic}` },
         ],
-        responseFormat: RESEARCH_SUMMARY_SCHEMA,
         enableWebSearch: true,
+        maxTokens: 5000,
+        reasoningEffort: 'none',
       })
     );
 
-    const researchData = JSON.parse(researchResponse.choices[0].message.content);
+    const researchData = parseJsonResponse(researchResponse.choices[0].message.content);
     transcript.researchSummary = JSON.stringify(researchData, null, 2);
 
     // ── Phase 2: Debate Rounds ──
@@ -69,14 +74,14 @@ export async function POST(request: NextRequest) {
         veniceChat({
           model: AGENTS.proponent.model,
           messages: [
-            { role: 'system', content: AGENTS.proponent.systemPrompt },
+            { role: 'system', content: AGENTS.proponent.systemPrompt + '\n\nOutput ONLY valid JSON. No markdown, no explanations.' },
             { role: 'user', content: proPrompt },
           ],
-          responseFormat: DEBATE_ROUND_SCHEMA,
+          maxTokens: 3000,
         })
       );
 
-      const proData = JSON.parse(proResponse.choices[0].message.content);
+      const proData = parseJsonResponse<{claim: string; evidence: Array<{point: string; source?: string}>; counter_to_opponent?: string}>(proResponse.choices[0].message.content);
 
       // Opponent speaks
       const oppPrompt = buildDebatePrompt(
@@ -91,20 +96,20 @@ export async function POST(request: NextRequest) {
         veniceChat({
           model: AGENTS.opponent.model,
           messages: [
-            { role: 'system', content: AGENTS.opponent.systemPrompt },
+            { role: 'system', content: AGENTS.opponent.systemPrompt + '\n\nOutput ONLY valid JSON. No markdown, no explanations.' },
             { role: 'user', content: oppPrompt },
           ],
-          responseFormat: DEBATE_ROUND_SCHEMA,
+          maxTokens: 2500,
         })
       );
 
-      const oppData = JSON.parse(oppResponse.choices[0].message.content);
+      const oppData = parseJsonResponse<{claim: string; evidence: Array<{point: string; source?: string}>; counter_to_opponent?: string}>(oppResponse.choices[0].message.content);
 
       const debateRound: DebateRound = {
         round,
-        proponentClaim: proData.claim,
+        proponentClaim: proData.claim || '',
         proponentEvidence: proData.evidence || [],
-        opponentClaim: oppData.claim,
+        opponentClaim: oppData.claim || '',
         opponentEvidence: oppData.evidence || [],
         proponentCounter: proData.counter_to_opponent || undefined,
         opponentCounter: oppData.counter_to_opponent || undefined,
@@ -127,14 +132,14 @@ export async function POST(request: NextRequest) {
       veniceChat({
         model: AGENTS.judge.model,
         messages: [
-          { role: 'system', content: AGENTS.judge.systemPrompt },
+          { role: 'system', content: AGENTS.judge.systemPrompt + '\n\nOutput ONLY valid JSON. No markdown, no explanations.' },
           { role: 'user', content: judgePrompt },
         ],
-        responseFormat: JUDGE_VERDICT_SCHEMA,
+        maxTokens: 4000,
       })
     );
 
-    const verdict: Verdict = JSON.parse(judgeResponse.choices[0].message.content);
+    const verdict: Verdict = parseJsonResponse(judgeResponse.choices[0].message.content);
     transcript.verdict = verdict;
     transcript.completed = true;
     transcript.completedAt = new Date().toISOString();

@@ -138,9 +138,7 @@ export function buildDebatePrompt(
     }
   }
 
-  return `${agent.systemPrompt}
-
-${roundInstruction}
+  return `${roundInstruction}
 
 Topic: ${topic}
 
@@ -148,7 +146,12 @@ Research summary:
 ${researchSummary}
 ${previousContext}
 
-Respond in the required JSON format.`;
+Respond in JSON format. Use this exact structure:
+{
+  "claim": "your main argument",
+  "evidence": [{"point": "evidence 1", "source": "source"}, {"point": "evidence 2"}],
+  "counter_to_opponent": "your rebuttal" or null
+}`;
 }
 
 /**
@@ -171,9 +174,7 @@ export function buildJudgePrompt(
     )
     .join('\n\n');
 
-  return `${agent.systemPrompt}
-
-Topic: ${topic}
+  return `Topic: ${topic}
 
 Research summary:
 ${researchSummary}
@@ -181,5 +182,9 @@ ${researchSummary}
 Full debate transcript:
 ${transcript}
 
-Evaluate both sides and provide your verdict in the required JSON format.`;
+Evaluate both sides and provide your verdict in JSON format with fields:
+- prediction: "YES" or "NO"
+- confidence: number 0-1
+- scores: { proponent: { logic, evidence, persuasion }, opponent: { logic, evidence, persuasion } }
+- reasoning: string explaining your decision`;
 }

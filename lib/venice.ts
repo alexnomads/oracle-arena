@@ -4,7 +4,7 @@
  */
 
 const VENICE_API_KEY = process.env.VENICE_API_KEY;
-const VENICE_API_BASE = process.env.VENICE_API_BASE || 'https://api.venice.ai/api';
+const VENICE_API_BASE = process.env.VENICE_API_BASE || 'https://api.venice.ai/api/v1';
 
 if (!VENICE_API_KEY) {
   console.warn('⚠️  VENICE_API_KEY not set. Set it in .env.local');
@@ -67,21 +67,24 @@ export interface TTSOptions {
  * Non-streaming chat completion
  */
 export async function veniceChat(options: ChatOptions): Promise<ChatResponse> {
+  const body: Record<string, unknown> = {
+    model: options.model,
+    messages: options.messages,
+    temperature: options.temperature ?? 0.7,
+    max_tokens: options.maxTokens ?? 4000,
+  };
+
+  if (options.reasoningEffort) body.reasoning_effort = options.reasoningEffort;
+  if (options.responseFormat) body.response_format = options.responseFormat;
+  if (options.enableWebSearch) body.venice_parameters = { enable_web_search: 'on' };
+
   const response = await fetch(`${VENICE_API_BASE}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${VENICE_API_KEY}`,
     },
-    body: JSON.stringify({
-      model: options.model,
-      messages: options.messages,
-      temperature: options.temperature ?? 0.7,
-      max_tokens: options.maxTokens ?? 2000,
-      reasoning_effort: options.reasoningEffort,
-      response_format: options.responseFormat,
-      enable_web_search: options.enableWebSearch,
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
@@ -98,6 +101,18 @@ export async function veniceChat(options: ChatOptions): Promise<ChatResponse> {
 export async function* veniceChatStream(
   options: ChatOptions
 ): AsyncGenerator<StreamChunk> {
+  const body: Record<string, unknown> = {
+    model: options.model,
+    messages: options.messages,
+    temperature: options.temperature ?? 0.7,
+    max_tokens: options.maxTokens ?? 4000,
+    stream: true,
+  };
+
+  if (options.reasoningEffort) body.reasoning_effort = options.reasoningEffort;
+  if (options.responseFormat) body.response_format = options.responseFormat;
+  if (options.enableWebSearch) body.venice_parameters = { enable_web_search: 'on' };
+
   const response = await fetch(`${VENICE_API_BASE}/chat/completions`, {
     method: 'POST',
     headers: {
@@ -105,15 +120,7 @@ export async function* veniceChatStream(
       Authorization: `Bearer ${VENICE_API_KEY}`,
       Accept: 'text/event-stream',
     },
-    body: JSON.stringify({
-      model: options.model,
-      messages: options.messages,
-      temperature: options.temperature ?? 0.7,
-      max_tokens: options.maxTokens ?? 2000,
-      reasoning_effort: options.reasoningEffort,
-      response_format: options.responseFormat,
-      stream: true,
-    }),
+    body: JSON.stringify(body),
   });
 
   if (!response.ok) {
