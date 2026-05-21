@@ -12,32 +12,9 @@ import type { DebateRound, Verdict } from '@/types/debate';
 
 const TOTAL_ROUNDS = 3;
 
-function createStreamResponse() {
-  const encoder = new TextEncoder();
-  const writable = new WritableStream({
-    start(controller) {
-      // Keep reference for writing
-    },
-  });
 
-  return {
-    writable,
-    encoder,
-    write: (data: string) => {
-      // This won't work directly in Next.js serverless. We'll use a different approach.
-    },
-  };
-}
 
 async function* debateStreamGenerator(topic: string) {
-  const send = (type: string, data?: unknown) => {
-    const message = {
-      type,
-      data,
-      timestamp: new Date().toISOString(),
-    };
-    yield `data: ${JSON.stringify(message)}\n\n`;
-  };
 
   // ── Phase 1: Research ──
   yield `data: ${JSON.stringify({ type: 'research', timestamp: new Date().toISOString() })}\n\n`;

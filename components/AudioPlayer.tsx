@@ -57,10 +57,12 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
             loadTrack(index + 1);
           }
         },
-        onerror: () => {
-          setIsLoading(false);
-          setIsPlaying(false);
-        },
+      });
+
+      // Handle play errors
+      howlRef.current.on('loaderror', () => {
+        setIsLoading(false);
+        setIsPlaying(false);
       });
     } catch (err) {
       console.error('Audio load error:', err);

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { params } from 'next/dist/compiled/@next/font/dist/google';
 import { notFound } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { DEMO_TOPICS } from '@/lib/agents';
