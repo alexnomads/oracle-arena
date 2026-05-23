@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Howl } from 'howler';
 
 interface AudioPlayerProps {
@@ -112,26 +113,57 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
 
   if (!texts.length) return null;
 
+  const agentColors: Record<string, string> = {
+    'Proponent': 'text-[--color-accent-green]',
+    'Opponent': 'text-[--color-accent-red]',
+    'Judge': 'text-[--color-accent-gold]',
+  };
+  const currentAgentColor = agentColors[texts[currentTrack]?.agent || ''] || 'text-zinc-400';
+
   return (
-    <div className="bg-surface border border-border rounded-xl p-4 space-y-3">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-[--color-surface] border border-[--color-border] rounded-xl p-5 space-y-4"
+    >
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <span className="text-sm font-semibold text-zinc-400">
-          🔊 Audio ({currentTrack + 1}/{texts.length})
-        </span>
-        <span className="text-xs text-zinc-600">{texts[currentTrack]?.agent}</span>
+        <div className="flex items-center gap-3">
+          <span className="text-lg">🔊</span>
+          <div>
+            <p className="text-sm font-bold text-zinc-300">
+              Audio ({currentTrack + 1}/{texts.length})
+            </p>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className={`text-xs font-medium ${currentAgentColor}`}
+            >
+              {texts[currentTrack]?.agent}
+            </motion.p>
+          </div>
+        </div>
+        <span className="text-xs text-zinc-600">TTS via Venice</span>
       </div>
 
-      {/* Waveform placeholder */}
-      <div className="h-8 flex items-center gap-0.5">
-        {Array.from({ length: 30 }).map((_, i) => (
-          <div
+      {/* Waveform visualization */}
+      <div className="h-12 flex items-center justify-center gap-0.5 px-2">
+        {Array.from({ length: 32 }).map((_, i) => (
+          <motion.div
             key={i}
             className={`flex-1 rounded-full transition-all ${
-              isPlaying ? 'bg-accent-blue animate-pulse' : 'bg-zinc-700'
+              isPlaying ? 'bg-[--color-accent-blue]' : 'bg-zinc-700'
             }`}
-            style={{
-              height: isPlaying ? `${Math.random() * 100}%` : '20%',
-              animationDelay: `${i * 0.05}s`,
+            animate={{
+              height: isPlaying ? `${Math.random() * 80 + 20}%` : '15%',
+              opacity: isPlaying ? 1 : 0.7,
+            }}
+            transition={{
+              duration: 0.5,
+              repeat: Infinity,
+              delay: i * 0.03,
+              ease: 'easeInOut',
             }}
           />
         ))}
@@ -139,30 +171,64 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
 
       {/* Controls */}
       <div className="flex items-center justify-center gap-4">
-        <button
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handlePrev}
           disabled={currentTrack === 0 || isLoading}
-          className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 disabled:opacity-30 transition-colors"
+          className={`p-3 rounded-xl bg-[--color-surface] border border-[--color-border] transition-colors ${
+            currentTrack === 0 || isLoading ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[--color-surface-hover]'
+          }`}
         >
-          ⏮
-        </button>
-        <button
+          <span className="text-lg">⏮</span>
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handlePlayPause}
           disabled={isLoading}
-          className="p-3 rounded-lg bg-accent-blue hover:bg-blue-600 disabled:opacity-30 transition-colors"
+          className={`p-4 rounded-xl bg-[--color-accent-blue] text-white font-bold shadow-lg shadow-blue-900/20 transition-all ${
+            isLoading ? 'opacity-60 cursor-wait' : 'hover:bg-blue-500'
+          }`}
         >
           {isPlaying ? '⏸' : '▶'}
-        </button>
-        <button
+        </motion.button>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={handleNext}
           disabled={currentTrack >= texts.length - 1 || isLoading}
-          className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 disabled:opacity-30 transition-colors"
+          className={`p-3 rounded-xl bg-[--color-surface] border border-[--color-border] transition-colors ${
+            currentTrack >= texts.length - 1 || isLoading ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[--color-surface-hover]'
+          }`}
         >
-          ⏭
-        </button>
+          <span className="text-lg">⏭</span>
+        </motion.button>
       </div>
 
-      {isLoading && <p className="text-xs text-center text-zinc-500">Generating audio...</p>}
-    </div>
+      {/* Status messages */}
+      {isLoading && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="text-xs text-center text-zinc-500"
+        >
+          Generating audio...
+        </motion.p>
+      )}
+      
+      {!isLoading && isPlaying && (
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-xs text-[--color-accent-blue] font-medium"
+        >
+          Playing...
+        </motion.span>
+      )}
+    </motion.div>
   );
 }

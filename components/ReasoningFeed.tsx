@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { AgentRole } from '@/types/debate';
 
 const ROLE_COLORS: Record<string, string> = {
-  proponent: 'text-accent-green',
-  opponent: 'text-accent-red',
-  judge: 'text-accent-gold',
-  researcher: 'text-accent-blue',
+  proponent: 'text-[--color-accent-green]',
+  opponent: 'text-[--color-accent-red]',
+  judge: 'text-[--color-accent-gold]',
+  researcher: 'text-zinc-400',
 };
 
 interface ReasoningFeedProps {
@@ -22,15 +22,25 @@ export default function ReasoningFeed({ agentRole, content, isActive = false }: 
   const colorClass = ROLE_COLORS[agentRole] || 'text-zinc-400';
 
   return (
-    <div className="mt-2">
+    <motion.div className="mt-3">
+      {/* Toggle button */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className={`text-xs flex items-center gap-1 ${colorClass} hover:opacity-80 transition-opacity`}
+        className={`flex items-center gap-1.5 text-xs font-medium ${colorClass} hover:opacity-80 transition-opacity group`}
       >
-        <span className={`transition-transform ${expanded ? 'rotate-90' : ''}`}>▶</span>
-        {isActive ? '🧠 Thinking...' : '📋 Show reasoning'}
+        <motion.span
+          animate={{ rotate: expanded ? 90 : 0 }}
+          transition={{ duration: 0.2 }}
+          className="text-lg"
+        >
+          ▶
+        </motion.span>
+        <span className={isActive ? 'animate-pulse' : ''}>
+          {isActive ? '🧠 Thinking...' : '📋 Show reasoning'}
+        </span>
       </button>
 
+      {/* Hidden content */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -39,12 +49,18 @@ export default function ReasoningFeed({ agentRole, content, isActive = false }: 
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className={`mt-2 p-3 rounded-lg bg-zinc-900/50 border border-zinc-800 text-sm ${colorClass} font-mono whitespace-pre-wrap`}>
-              {content}
-            </div>
+            <motion.div
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 10, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`mt-2 p-3 rounded-lg bg-[--color-surface] border border-[--color-border]/50 text-xs font-mono whitespace-pre-wrap ${colorClass} leading-relaxed`}
+            >
+              {content.trim()}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

@@ -1,13 +1,18 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { motion } from 'framer-motion';
 import { DEMO_TOPICS } from '@/lib/agents';
 import AgentAvatar from '@/components/AgentAvatar';
 import DebateTranscript from '@/components/DebateTranscript';
 import Scoreboard from '@/components/Scoreboard';
 import AudioPlayer from '@/components/AudioPlayer';
+import ReasoningFeed from '@/components/ReasoningFeed';
+import BettingPanel from '@/components/BettingPanel';
 import type { DebateTranscript as DebateTranscriptType, Verdict, SSEMessage } from '@/types/debate';
 
 // Find topic by ID
@@ -27,7 +32,6 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
   const [audioTexts, setAudioTexts] = useState<Array<{ text: string; voiceId: string; agent: string }>>([]);
   const eventSourceRef = useRef<EventSource | null>(null);
 
-  // Resolve dynamic params client-side
   useEffect(() => {
     params.then(p => setResolvedParams(p));
   }, [params]);
@@ -47,8 +51,8 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
 
   const startDebate = async (topic: string, topicId: string) => {
     setPhase('research');
-
-    // Try SSE stream first
+    eventSourceRef.current?.close();
+    
     const es = new EventSource(`/api/debate/stream?topic=${encodeURIComponent(topic)}&topicId=${topicId}`);
     eventSourceRef.current = es;
 
@@ -65,21 +69,18 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
           setPhase('research');
           break;
         case 'research_complete':
-          setPhase('debating');
-          break;
         case 'round_start':
-          setCurrentRound(data.data.round);
           setPhase('debating');
+          setCurrentRound(data.data.round || currentRound + 1);
           break;
         case 'agent_speaking':
-          setCurrentAgent(data.data.agent);
+          setCurrentAgent(data.data.agent || currentAgent);
           break;
         case 'agent_said':
           setCurrentAgent(null);
-          // Accumulate rounds - for simplicity, we'll fetch full transcript at end
           break;
         case 'round_end':
-          setCurrentRound(data.data.round);
+          setCurrentRound(data.data.round || currentRound + 1);
           break;
         case 'judge_starting':
         case 'judge_reasoning':
@@ -88,8 +89,6 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
         case 'verdict':
           setVerdict(data.data);
           setPhase('complete');
-          // Fetch full transcript
-          fetchFullTranscript(topic, topicId);
           break;
         case 'cached':
           setTranscript(data.data);
@@ -105,7 +104,6 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
 
     es.onerror = () => {
       es.close();
-      // Fallback: fetch non-streaming endpoint
       fetchFallbackDebate(topic, topicId);
     };
   };
@@ -127,7 +125,6 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
   };
 
   const fetchFallbackDebate = async (topic: string, topicId: string) => {
-    setPhase('debating');
     try {
       const res = await fetch('/api/debate', {
         method: 'POST',
@@ -156,7 +153,6 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
     };
   }, []);
 
-  // Prepare TTS texts for Round 3
   useEffect(() => {
     if (!transcript || !transcript.rounds.length) return;
     const round3 = transcript.rounds[transcript.rounds.length - 1];
@@ -165,7 +161,7 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
       { text: round3.proponentClaim, voiceId: 'eleven_multilingual_v2', agent: 'Proponent' },
       { text: round3.opponentClaim, voiceId: 'eleven_english_v1', agent: 'Opponent' },
     ]);
-    if (transcript.verdict) {
+    if (transcript.verdict && transcript.verdict.reasoning) {
       setAudioTexts(prev => [...prev, {
         text: transcript.verdict!.reasoning,
         voiceId: 'eleven_multilingual_v2',
@@ -182,89 +178,160 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
 
   if (phase === 'error') {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4">
-        <p className="text-xl text-accent-red">⚠️ {errorMessage}</p>
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6">
+        <p className="text-xl text-[--color-accent-red] font-bold">⚠️ {errorMessage}</p>
         <button
           onClick={() => {
             if (topic) startDebate(topic.question, resolvedParams.id);
           }}
-          className="px-4 py-2 bg-accent-blue rounded-lg hover:bg-blue-600 transition-colors"
+          className="px-6 py-3 bg-[--color-accent-blue] text-white rounded-xl hover:bg-blue-600 transition-colors font-semibold"
         >
-          Retry
+          Retry Debate
         </button>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen">
-      {/* Header */}
-      <header className="border-b border-border sticky top-0 bg-background/80 backdrop-blur-sm z-10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-lg font-bold">{topic?.question || 'Custom Debate'}</h1>
-            <p className="text-xs text-zinc-500">Oracle Arena &middot; Live Debate</p>
+    <motion.main className="min-h-screen flex flex-col">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-50 border-b border-[--color-border] bg-[--color-background]/95 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+          {/* Left: Topic */}
+          <div className="flex-1 min-w-0 mr-4">
+            <h1 className="text-base font-bold text-zinc-200 truncate">{topic?.question || 'Custom Debate'}</h1>
+            <p className="text-xs text-zinc-500 uppercase tracking-wide">Oracle Arena</p>
           </div>
+
+          {/* Right: Audio toggle + avatars */}
           <div className="flex items-center gap-3">
-            <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer">
+            <label className="flex items-center gap-2 text-xs text-zinc-400 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={audioEnabled}
                 onChange={(e) => setAudioEnabled(e.target.checked)}
-                className="rounded"
+                className="rounded border-[--color-border] bg-[--color-surface]"
               />
-              Audio
+              <span className="flex items-center gap-1">🔊 Audio</span>
             </label>
-            <div className="flex items-center gap-2">
-              <AgentAvatar role="proponent" size="sm" isActive={currentAgent === 'proponent'} />
-              <AgentAvatar role="judge" size="sm" isActive={phase === 'judging'} />
+            
+            <div className="flex -space-x-2">
+              <AgentAvatar role="proponent" size="sm" isActive={currentAgent === 'proponent' || currentAgent === null} />
               <AgentAvatar role="opponent" size="sm" isActive={currentAgent === 'opponent'} />
+              <AgentAvatar role="judge" size="sm" isActive={phase === 'judging' || phase === 'complete'} />
             </div>
+
+            <Link 
+              href="/" 
+              className="ml-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+            >
+              ← Back
+            </Link>
           </div>
         </div>
       </header>
 
-      {/* Phase indicator */}
-      <div className="max-w-6xl mx-auto px-4 py-4">
+      {/* Phase Indicator */}
+      <div className="max-w-6xl mx-auto px-4 py-3">
         <PhaseIndicator phase={phase} currentRound={currentRound} />
       </div>
 
-      {/* Main content */}
-      <div className="max-w-6xl mx-auto px-4 pb-20">
-        {phase === 'research' && <ResearchPhase />}
-        {phase === 'debating' && transcript && <DebateTranscript rounds={transcript.rounds} />}
-        {phase === 'judging' && <JudgingPhase />}
-        {phase === 'complete' && (
-          <div className="space-y-6">
-            {transcript && <DebateTranscript rounds={transcript.rounds} />}
-            <Scoreboard verdict={verdict} />
-            {audioEnabled && audioTexts.length > 0 && (
-              <AudioPlayer texts={audioTexts} autoPlay={false} />
-            )}
-          </div>
-        )}
+      {/* Main Content */}
+      <div className="flex-1 max-w-6xl mx-auto w-full px-4 pb-20">
+        <AnimatePresence mode="wait">
+          {phase === 'research' && (
+            <motion.div
+              key="research"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="w-full"
+            >
+              <ResearchPhase />
+            </motion.div>
+          )}
+
+          {phase === 'debating' && transcript && (
+            <motion.div
+              key="debating"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="space-y-6"
+            >
+              <DebateTranscript rounds={transcript.rounds} />
+            </motion.div>
+          )}
+
+          {phase === 'judging' && (
+            <motion.div
+              key="judging"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="w-full"
+            >
+              <JudgingPhase />
+            </motion.div>
+          )}
+
+          {phase === 'complete' && (
+            <motion.div
+              key="complete"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="space-y-6"
+            >
+              <div className="border-b border-[--color-border] pb-4">
+                <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-2">Debate Complete</h2>
+                <p className="text-sm text-zinc-600">Here&apos;s the full transcript and verdict</p>
+              </div>
+              
+              {transcript && <DebateTranscript rounds={transcript.rounds} />}
+              <Scoreboard verdict={verdict} />
+              {verdict && topic && (
+                <BettingPanel
+                  topicId={resolvedParams.id}
+                  topic={topic.question}
+                  verdict={verdict}
+                />
+              )}
+              {audioEnabled && audioTexts.length > 0 && (
+                <AudioPlayer texts={audioTexts} autoPlay={true} />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </main>
+    </motion.main>
   );
 }
 
+// Phase indicator component
 function PhaseIndicator({ phase, currentRound }: { phase: string; currentRound: number }) {
-  const phases = ['Research', 'Round 1', 'Round 2', 'Round 3', 'Judge'];
-  const phaseIndex = phase === 'research' ? 0 : phase === 'debating' ? Math.min(currentRound, 3) : phase === 'judging' ? 4 : 5;
+  const phases = ['Research', 'R1', 'R2', 'R3', 'Judge'];
+  const maxPhases = 5;
+  const currentIndex = 
+    phase === 'research' ? 0 :
+    phase === 'debating' ? Math.min(currentRound, 3) :
+    phase === 'judging' ? 4 : -1;
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 overflow-x-auto">
       {phases.map((label, i) => (
-        <div key={label} className="flex items-center gap-2 flex-1">
-          <div className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold transition-all ${
-            i < phaseIndex ? 'bg-accent-blue text-white' :
-            i === phaseIndex ? 'bg-accent-gold text-black animate-pulse' :
-            'bg-zinc-800 text-zinc-600'
+        <div key={label} className={`flex items-center ${i > maxPhases ? 'hidden md:flex' : ''}`}>
+          <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all border ${
+            i < currentIndex 
+              ? 'bg-[--color-accent-gold] text-black border-[--color-accent-gold]' 
+              : i === currentIndex
+                ? 'bg-zinc-800 text-[--color-accent-gold] border-[--color-accent-gold] animate-pulse'
+                : 'bg-[--color-surface] text-zinc-600 border-[--color-border]'
           }`}>
-            {i < phaseIndex ? '✓' : i + 1}
+            {i < currentIndex ? '✓' : i + 1}
           </div>
-          <span className={`text-xs ${i <= phaseIndex ? 'text-zinc-300' : 'text-zinc-600'}`}>{label}</span>
-          {i < phases.length - 1 && <div className={`flex-1 h-px ${i < phaseIndex ? 'bg-accent-blue' : 'bg-zinc-800'}`} />}
+          <span className={`text-xs ml-1 ${i <= currentIndex ? 'text-zinc-300' : 'text-zinc-600'}`}>
+            {label}
+          </span>
         </div>
       ))}
     </div>
@@ -278,15 +345,28 @@ function ResearchPhase() {
       animate={{ opacity: 1 }}
       className="text-center py-20 space-y-4"
     >
-      <div className="text-4xl animate-bounce">🔍</div>
-      <h2 className="text-xl font-semibold text-zinc-300">Researching topic...</h2>
-      <p className="text-sm text-zinc-500">Gathering data, news, and expert opinions</p>
-      <div className="flex justify-center gap-1 mt-4">
+      <motion.div
+        animate={{ scale: [1, 1.1, 1] }}
+        transition={{ duration: 3, repeat: Infinity }}
+        className="text-5xl mb-4"
+      >
+        🔍
+      </motion.div>
+      <h2 className="text-xl font-bold text-zinc-300">Researching topic...</h2>
+      <p className="text-sm text-zinc-500 max-w-md mx-auto">Gathering current data, news, and expert opinions to inform the debate</p>
+      
+      {/* Loading dots */}
+      <div className="flex justify-center gap-2 mt-6">
         {[0, 1, 2, 3, 4].map(i => (
-          <div
+          <motion.div
             key={i}
-            className="w-2 h-2 rounded-full bg-accent-blue animate-pulse"
-            style={{ animationDelay: `${i * 0.2}s` }}
+            className="w-2 h-2 rounded-full bg-[--color-accent-blue]"
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{
+              duration: 1,
+              repeat: Infinity,
+              delay: i * 0.15,
+            }}
           />
         ))}
       </div>
@@ -301,15 +381,28 @@ function JudgingPhase() {
       animate={{ opacity: 1 }}
       className="text-center py-20 space-y-4"
     >
-      <div className="text-4xl animate-pulse">⚖️</div>
-      <h2 className="text-xl font-semibold text-zinc-300">Judge is evaluating...</h2>
-      <p className="text-sm text-zinc-500">Analyzing arguments, evidence, and persuasion</p>
-      <div className="flex justify-center gap-1 mt-4">
+      <motion.div
+        animate={{ scale: [1, 1.05, 1] }}
+        transition={{ duration: 2, repeat: Infinity }}
+        className="text-5xl mb-4"
+      >
+        ⚖️
+      </motion.div>
+      <h2 className="text-xl font-bold text-zinc-300">Judge is evaluating...</h2>
+      <p className="text-sm text-zinc-500 max-w-md mx-auto">Analyzing arguments, evidence quality, and persuasive impact</p>
+      
+      {/* Loading bars */}
+      <div className="flex justify-center gap-1 mt-6">
         {[0, 1, 2, 3, 4].map(i => (
-          <div
+          <motion.div
             key={i}
-            className="w-2 h-2 rounded-full bg-accent-gold animate-pulse"
-            style={{ animationDelay: `${i * 0.2}s` }}
+            className="w-2 h-2 rounded-full bg-[--color-accent-gold]"
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              delay: i * 0.2,
+            }}
           />
         ))}
       </div>

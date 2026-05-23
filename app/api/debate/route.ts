@@ -40,13 +40,20 @@ export async function POST(request: NextRequest) {
     };
 
     // ── Phase 1: Research ──
+    console.log('Starting research phase...');
     const researcher = AGENTS.researcher;
     const researchResponse = await withRetry(async () =>
       veniceChat({
         model: researcher.model,
         messages: [
-          { role: 'system', content: researcher.systemPrompt + '\n\nOutput ONLY valid JSON. Use this structure: { "current_state": "...", "key_data_points": ["..."], "expert_opinions": ["..."], "recent_trends": "..." }' },
-          { role: 'user', content: `Research this prediction topic: ${topic}` },
+          { role: 'system', content: researcher.systemPrompt + '\n\nCRITICAL: Your ENTIRE response must be ONE valid JSON object. No text before or after. No markdown. No explanations. Only JSON.' },
+          { role: 'user', content: `Research this prediction topic: ${topic}\n\nRespond with ONLY this JSON structure:
+{
+  "current_state": "string",
+  "key_data_points": ["string"],
+  "expert_opinions": ["string"],
+  "recent_trends": "string"
+}` },
         ],
         enableWebSearch: true,
         maxTokens: 5000,
@@ -54,7 +61,12 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    const researchData = parseJsonResponse(researchResponse.choices[0].message.content);
+    const researchContent = researchResponse.choices[0].message.content;
+    console.log('Researcher raw response:', researchContent?.slice(0, 300));
+    if (!researchContent || researchContent.trim().length === 0) {
+      throw new Error('Researcher returned empty response');
+    }
+    const researchData = parseJsonResponse(researchContent);
     transcript.researchSummary = JSON.stringify(researchData, null, 2);
 
     // ── Phase 2: Debate Rounds ──

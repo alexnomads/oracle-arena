@@ -1,0 +1,1 @@
+{"model":"qwen3-5-9b","messages":[{"role":"system","content":"You are a researcher. Output ONLY valid JSON."},{"role":"user","content":"Research: Will BTC hit $100K by June? Output JSON: {\"current_state\": \"...\", \"key_data_points\": [\"...\"], \"recent_trends\": \"...\"}"}],"max_tokens":3000,"reasoning_effort":"none"}
