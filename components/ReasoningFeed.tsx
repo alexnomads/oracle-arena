@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import type { AgentRole } from '@/types/debate';
 
 const ROLE_COLORS: Record<string, string> = {
-  proponent: 'text-[--color-accent-green]',
-  opponent: 'text-[--color-accent-red]',
-  judge: 'text-[--color-accent-gold]',
-  researcher: 'text-zinc-400',
+  proponent: 'text-[--accent-cyan]',
+  opponent: 'text-[--accent-magenta]',
+  judge: 'text-[--accent-white]',
+  researcher: 'text-[--accent-gold]',
 };
 
 interface ReasoningFeedProps {
@@ -36,7 +36,7 @@ export default function ReasoningFeed({ agentRole, content, isActive = false }: 
           ▶
         </motion.span>
         <span className={isActive ? 'animate-pulse' : ''}>
-          {isActive ? '🧠 Thinking...' : '📋 Show reasoning'}
+          {isActive ? '🧠 Thinking…' : '📋 Show reasoning'}
         </span>
       </button>
 
@@ -54,7 +54,7 @@ export default function ReasoningFeed({ agentRole, content, isActive = false }: 
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: 10, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className={`mt-2 p-3 rounded-lg bg-[--color-surface] border border-[--color-border]/50 text-xs font-mono whitespace-pre-wrap ${colorClass} leading-relaxed`}
+              className={`mt-2 p-3 rounded-lg bg-[--surface] border border-[--border]/50 text-xs font-mono whitespace-pre-wrap ${colorClass} leading-relaxed`}
             >
               {content.trim()}
             </motion.div>

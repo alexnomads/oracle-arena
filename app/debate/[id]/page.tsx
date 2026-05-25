@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { DEMO_TOPICS } from '@/lib/agents';
 import AgentAvatar from '@/components/AgentAvatar';
@@ -171,7 +172,7 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
   }, [transcript]);
 
   if (!resolvedParams) {
-    return <div className="min-h-screen flex items-center justify-center text-zinc-500">Loading...</div>;
+    return <div className="min-h-screen flex items-center justify-center text-zinc-500">Loading…</div>;
   }
 
   const topic = findTopic(resolvedParams.id);
@@ -179,12 +180,12 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
   if (phase === 'error') {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6">
-        <p className="text-xl text-[--color-accent-red] font-bold">⚠️ {errorMessage}</p>
+        <p className="text-xl text-[--accent-magenta] font-bold">⚠️ The oracle is clouded. {errorMessage}</p>
         <button
           onClick={() => {
             if (topic) startDebate(topic.question, resolvedParams.id);
           }}
-          className="px-6 py-3 bg-[--color-accent-blue] text-white rounded-xl hover:bg-blue-600 transition-colors font-semibold"
+          className="px-6 py-3 bg-[--accent-cyan] text-black rounded-xl hover:opacity-90 transition-colors font-semibold"
         >
           Retry Debate
         </button>
@@ -195,12 +196,17 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
   return (
     <motion.main className="min-h-screen flex flex-col">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 border-b border-[--color-border] bg-[--color-background]/95 backdrop-blur-sm">
+      <header className="sticky top-0 z-50 border-b border-[--border] bg-[--background]/95 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          {/* Left: Topic */}
-          <div className="flex-1 min-w-0 mr-4">
-            <h1 className="text-base font-bold text-zinc-200 truncate">{topic?.question || 'Custom Debate'}</h1>
-            <p className="text-xs text-zinc-500 uppercase tracking-wide">Oracle Arena</p>
+          {/* Left: Logo + Topic */}
+          <div className="flex items-center gap-3 flex-1 min-w-0 mr-4">
+            <div className="relative w-7 h-7 flex-shrink-0">
+              <Image src="/oracle-arena-icon.png" alt="Oracle Arena" fill className="object-contain" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-sm font-bold text-[--foreground] truncate">{topic?.question || 'Custom Debate'}</h1>
+              <p className="text-[10px] text-zinc-500 uppercase tracking-wide">Oracle Arena</p>
+            </div>
           </div>
 
           {/* Right: Audio toggle + avatars */}
@@ -210,7 +216,7 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
                 type="checkbox"
                 checked={audioEnabled}
                 onChange={(e) => setAudioEnabled(e.target.checked)}
-                className="rounded border-[--color-border] bg-[--color-surface]"
+                className="rounded border-[--border] bg-[--surface]"
               />
               <span className="flex items-center gap-1">🔊 Audio</span>
             </label>
@@ -223,7 +229,7 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
 
             <Link 
               href="/" 
-              className="ml-2 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+              className="ml-2 text-xs text-zinc-500 hover:text-[--accent-cyan] transition-colors"
             >
               ← Back
             </Link>
@@ -282,9 +288,9 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
               animate={{ opacity: 1, scale: 1 }}
               className="space-y-6"
             >
-              <div className="border-b border-[--color-border] pb-4">
-                <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wide mb-2">Debate Complete</h2>
-                <p className="text-sm text-zinc-600">Here&apos;s the full transcript and verdict</p>
+              <div className="border-b border-[--border] pb-4">
+                <h2 className="text-xs font-semibold text-[--accent-cyan] uppercase tracking-wide mb-2">Debate Complete</h2>
+                <p className="text-sm text-zinc-500">Here&apos;s the full transcript and verdict</p>
               </div>
               
               {transcript && <DebateTranscript rounds={transcript.rounds} />}
@@ -307,14 +313,15 @@ export default function DebatePage({ params }: { params: Promise<{ id: string }>
   );
 }
 
-// Phase indicator component
+// Phase indicator — timeline style
 function PhaseIndicator({ phase, currentRound }: { phase: string; currentRound: number }) {
   const phases = ['Research', 'R1', 'R2', 'R3', 'Judge'];
   const maxPhases = 5;
   const currentIndex = 
     phase === 'research' ? 0 :
     phase === 'debating' ? Math.min(currentRound, 3) :
-    phase === 'judging' ? 4 : -1;
+    phase === 'judging' ? 4 :
+    phase === 'complete' ? 4 : -1;
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto">
@@ -322,14 +329,14 @@ function PhaseIndicator({ phase, currentRound }: { phase: string; currentRound: 
         <div key={label} className={`flex items-center ${i > maxPhases ? 'hidden md:flex' : ''}`}>
           <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all border ${
             i < currentIndex 
-              ? 'bg-[--color-accent-gold] text-black border-[--color-accent-gold]' 
+              ? 'bg-[--accent-cyan] text-black border-[--accent-cyan]' 
               : i === currentIndex
-                ? 'bg-zinc-800 text-[--color-accent-gold] border-[--color-accent-gold] animate-pulse'
-                : 'bg-[--color-surface] text-zinc-600 border-[--color-border]'
+                ? 'bg-[--surface] text-[--accent-cyan] border-[--accent-cyan] pulse-ring'
+                : 'bg-[--surface] text-zinc-600 border-[--border]'
           }`}>
             {i < currentIndex ? '✓' : i + 1}
           </div>
-          <span className={`text-xs ml-1 ${i <= currentIndex ? 'text-zinc-300' : 'text-zinc-600'}`}>
+          <span className={`text-xs ml-1 ${i <= currentIndex ? 'text-[--foreground]' : 'text-zinc-600'}`}>
             {label}
           </span>
         </div>
@@ -340,11 +347,7 @@ function PhaseIndicator({ phase, currentRound }: { phase: string; currentRound: 
 
 function ResearchPhase() {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="text-center py-20 space-y-4"
-    >
+    <div className="oracle-card text-center py-20 space-y-4">
       <motion.div
         animate={{ scale: [1, 1.1, 1] }}
         transition={{ duration: 3, repeat: Infinity }}
@@ -352,7 +355,7 @@ function ResearchPhase() {
       >
         🔍
       </motion.div>
-      <h2 className="text-xl font-bold text-zinc-300">Researching topic...</h2>
+      <h2 className="text-xl font-bold text-[--accent-cyan]">Researching topic…</h2>
       <p className="text-sm text-zinc-500 max-w-md mx-auto">Gathering current data, news, and expert opinions to inform the debate</p>
       
       {/* Loading dots */}
@@ -360,7 +363,7 @@ function ResearchPhase() {
         {[0, 1, 2, 3, 4].map(i => (
           <motion.div
             key={i}
-            className="w-2 h-2 rounded-full bg-[--color-accent-blue]"
+            className="w-2 h-2 rounded-full bg-[--accent-cyan]"
             animate={{ opacity: [0.3, 1, 0.3] }}
             transition={{
               duration: 1,
@@ -370,33 +373,50 @@ function ResearchPhase() {
           />
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 function JudgingPhase() {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="text-center py-20 space-y-4"
-    >
+    <div className="oracle-card text-center py-20 space-y-4 relative overflow-hidden">
+      {/* Cyan particles effect */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 rounded-full bg-[--accent-cyan]/40"
+            initial={{ x: Math.random() * 400 - 200, y: Math.random() * 200, opacity: 0 }}
+            animate={{ 
+              y: [0, -30, 0],
+              opacity: [0, 0.6, 0],
+            }}
+            transition={{ 
+              duration: 3 + i * 0.5,
+              repeat: Infinity,
+              delay: i * 0.4,
+            }}
+            style={{ left: '50%', top: `${40 + i * 10}%` }}
+          />
+        ))}
+      </div>
+
       <motion.div
         animate={{ scale: [1, 1.05, 1] }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="text-5xl mb-4"
+        className="text-5xl mb-4 relative"
       >
         ⚖️
       </motion.div>
-      <h2 className="text-xl font-bold text-zinc-300">Judge is evaluating...</h2>
-      <p className="text-sm text-zinc-500 max-w-md mx-auto">Analyzing arguments, evidence quality, and persuasive impact</p>
+      <h2 className="text-xl font-bold text-[--accent-cyan]">The Judge evaluates…</h2>
+      <p className="text-sm text-zinc-500 max-w-md mx-auto relative">Analyzing arguments, evidence quality, and persuasive impact</p>
       
       {/* Loading bars */}
-      <div className="flex justify-center gap-1 mt-6">
+      <div className="flex justify-center gap-1 mt-6 relative">
         {[0, 1, 2, 3, 4].map(i => (
           <motion.div
             key={i}
-            className="w-2 h-2 rounded-full bg-[--color-accent-gold]"
+            className="w-2 h-2 rounded-full bg-[--accent-cyan]"
             animate={{ opacity: [0.3, 1, 0.3] }}
             transition={{
               duration: 1.5,
@@ -406,6 +426,6 @@ function JudgingPhase() {
           />
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }

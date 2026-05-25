@@ -54,12 +54,12 @@ export default function BettingPanel({ topicId, topic, verdict }: BettingPanelPr
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-[--color-surface] border border-[--color-border] rounded-xl p-6 space-y-5"
+      className="oracle-card p-6 space-y-5"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-bold text-zinc-200 flex items-center gap-2">
+          <h3 className="text-sm font-bold text-[--foreground] flex items-center gap-2">
             <span>🎰</span> Place Your Bet
           </h3>
           <p className="text-xs text-zinc-500 mt-1">
@@ -73,11 +73,11 @@ export default function BettingPanel({ topicId, topic, verdict }: BettingPanelPr
       </div>
 
       {existingBet ? (
-        <div className="bg-zinc-800/50 rounded-lg p-4 border border-[--color-border]/50">
+        <div className="bg-[#0D0D0D]/50 rounded-lg p-4 border border-[--border]/50">
           <p className="text-sm text-zinc-400">You already bet on this topic:</p>
           <div className="flex items-center gap-4 mt-2">
             <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-              existingBet.side === 'YES' ? 'bg-[--accent-green]/20 text-[--accent-green]' : 'bg-[--accent-red]/20 text-[--accent-red]'
+              existingBet.side === 'YES' ? 'bg-[--accent-cyan]/20 text-[--accent-cyan]' : 'bg-[--accent-magenta]/20 text-[--accent-magenta]'
             }`}>
               {existingBet.side}
             </span>
@@ -87,61 +87,65 @@ export default function BettingPanel({ topicId, topic, verdict }: BettingPanelPr
         </div>
       ) : (
         <>
-          {/* Side selection */}
+          {/* Side selection — orb style */}
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={() => setSelectedSide('YES')}
               className={`p-4 rounded-xl border-2 transition-all text-center ${
                 selectedSide === 'YES'
-                  ? 'border-[--accent-green] bg-[--accent-green]/10 shadow-lg shadow-green-900/20'
-                  : 'border-[--color-border] bg-[--color-background] hover:border-zinc-500'
+                  ? 'border-[--accent-cyan] bg-[--accent-cyan]/10 glow-cyan'
+                  : 'border-[--border] bg-[--background] hover:border-[--accent-cyan]/30'
               }`}
             >
-              <div className="text-2xl mb-1">🟢</div>
-              <div className="text-sm font-bold text-[--accent-green]">YES</div>
+              <div className="w-10 h-10 rounded-full bg-[--accent-cyan]/10 border border-[--accent-cyan]/30 flex items-center justify-center mx-auto mb-2">
+                <span className="text-sm font-bold text-[--accent-cyan]">Y</span>
+              </div>
+              <div className="text-sm font-bold text-[--accent-cyan]">YES</div>
               <div className="text-xs text-zinc-500 mt-1">Odds: {yesOdds}</div>
             </button>
             <button
               onClick={() => setSelectedSide('NO')}
               className={`p-4 rounded-xl border-2 transition-all text-center ${
                 selectedSide === 'NO'
-                  ? 'border-[--accent-red] bg-[--accent-red]/10 shadow-lg shadow-red-900/20'
-                  : 'border-[--color-border] bg-[--color-background] hover:border-zinc-500'
+                  ? 'border-[--accent-magenta] bg-[--accent-magenta]/10 glow-magenta'
+                  : 'border-[--border] bg-[--background] hover:border-[--accent-magenta]/30'
               }`}
             >
-              <div className="text-2xl mb-1">🔴</div>
-              <div className="text-sm font-bold text-[--accent-red]">NO</div>
+              <div className="w-10 h-10 rounded-full bg-[--accent-magenta]/10 border border-[--accent-magenta]/30 flex items-center justify-center mx-auto mb-2">
+                <span className="text-sm font-bold text-[--accent-magenta]">N</span>
+              </div>
+              <div className="text-sm font-bold text-[--accent-magenta]">NO</div>
               <div className="text-xs text-zinc-500 mt-1">Odds: {noOdds}</div>
             </button>
           </div>
 
-          {/* Amount input */}
+          {/* Amount input — oracle input style */}
           <div className="space-y-2">
             <div className="flex gap-2">
               <input
                 type="number"
-                placeholder="Amount..."
+                placeholder="Amount…"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 min={1}
                 max={wallet.balance}
-                className="flex-1 bg-[--color-background] border border-[--color-border] rounded-xl px-4 py-3 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
+                className="flex-1 bg-[--background] border border-[--border] rounded-xl px-4 py-3 text-[--foreground] placeholder-zinc-500 focus:outline-none focus:border-[--accent-cyan]/50 transition-colors"
               />
               <button
                 onClick={() => setAmount(String(wallet.balance))}
-                className="px-4 py-3 rounded-xl bg-zinc-700 text-zinc-300 text-xs font-semibold hover:bg-zinc-600 transition-colors"
+                className="px-4 py-3 rounded-xl bg-[--surface] text-zinc-300 text-xs font-semibold hover:bg-[--surface-hover] transition-colors border border-[--border]"
               >
                 MAX
               </button>
             </div>
 
-            {/* Quick amounts */}
+            {/* Quick bet buttons — cyan border */}
             <div className="flex gap-2">
               {[10, 25, 50, 100].map((v) => (
                 <button
                   key={v}
                   onClick={() => setAmount(String(v))}
-                  className="flex-1 py-2 rounded-lg bg-[--color-background] border border-[--color-border] text-xs text-zinc-400 hover:text-zinc-200 hover:border-zinc-500 transition-all"
+                  className="flex-1 py-2 rounded-lg bg-[--background] border border-[--accent-cyan]/30 text-xs text-zinc-400 hover:text-[--accent-cyan] hover:border-[--accent-cyan] transition-all"
                 >
                   {v}
                 </button>
@@ -163,14 +167,14 @@ export default function BettingPanel({ topicId, topic, verdict }: BettingPanelPr
             )}
           </div>
 
-          {/* Place bet button */}
+          {/* Place bet button — gold gradient full-width */}
           <button
             onClick={handlePlaceBet}
             disabled={!selectedSide || !amount || parseFloat(amount) <= 0 || parseFloat(amount) > wallet.balance}
             className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
               selectedSide && amount && parseFloat(amount) > 0 && parseFloat(amount) <= wallet.balance
-                ? 'bg-gradient-to-r from-[--accent-gold] to-yellow-500 text-black hover:opacity-90 shadow-lg shadow-yellow-900/20'
-                : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+                ? 'bg-gradient-to-r from-[--accent-gold] to-yellow-500 text-black hover:opacity-90 glow-gold'
+                : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
             }`}
           >
             {selectedSide ? `Bet ${amount || '0'} on ${selectedSide}` : 'Select YES or NO'}
@@ -178,17 +182,35 @@ export default function BettingPanel({ topicId, topic, verdict }: BettingPanelPr
         </>
       )}
 
-      {/* Last bet confirmation */}
+      {/* Last bet confirmation — gold border with confetti */}
       <AnimatePresence>
         {placed && lastBet && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
-            className="bg-[--accent-green]/10 border border-[--accent-green]/30 rounded-lg p-4 text-center"
+            className="bg-[--accent-gold]/10 border-2 border-[--accent-gold]/30 rounded-lg p-4 text-center relative overflow-hidden"
           >
-            <p className="text-sm font-bold text-[--accent-green]">✅ Bet Placed!</p>
-            <p className="text-xs text-zinc-400 mt-1">
+            {/* Confetti dots */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1.5 h-1.5 rounded-full bg-[--accent-gold]/40"
+                initial={{ x: Math.random() * 300 - 150, y: 20, opacity: 0 }}
+                animate={{ 
+                  y: [20, -20, 20],
+                  opacity: [0, 0.8, 0],
+                }}
+                transition={{ 
+                  duration: 2 + i * 0.3,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                }}
+                style={{ left: '50%' }}
+              />
+            ))}
+            <p className="text-sm font-bold text-[--accent-gold] relative">✨ Wisdom prevails! Bet placed.</p>
+            <p className="text-xs text-zinc-400 mt-1 relative">
               {lastBet.amount} credits on {lastBet.side} → {lastBet.potentialPayout} potential payout
             </p>
           </motion.div>

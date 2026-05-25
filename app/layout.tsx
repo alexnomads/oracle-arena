@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Image from "next/image";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -15,6 +16,14 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Oracle Arena — AI Prediction Debates",
   description: "Three AI agents debate predictions. A judge scores them. You decide.",
+  icons: {
+    icon: [
+      { url: "/oracle-arena-icon.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/oracle-arena-icon.png", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({

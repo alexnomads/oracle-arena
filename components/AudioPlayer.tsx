@@ -53,14 +53,12 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
         },
         onend: () => {
           setIsPlaying(false);
-          // Auto-advance to next track
           if (index < texts.length - 1) {
             loadTrack(index + 1);
           }
         },
       });
 
-      // Handle play errors
       howlRef.current.on('loaderror', () => {
         setIsLoading(false);
         setIsPlaying(false);
@@ -114,9 +112,9 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
   if (!texts.length) return null;
 
   const agentColors: Record<string, string> = {
-    'Proponent': 'text-[--color-accent-green]',
-    'Opponent': 'text-[--color-accent-red]',
-    'Judge': 'text-[--color-accent-gold]',
+    'Proponent': 'text-[--accent-cyan]',
+    'Opponent': 'text-[--accent-magenta]',
+    'Judge': 'text-[--accent-white]',
   };
   const currentAgentColor = agentColors[texts[currentTrack]?.agent || ''] || 'text-zinc-400';
 
@@ -124,14 +122,14 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-[--color-surface] border border-[--color-border] rounded-xl p-5 space-y-4"
+      className="oracle-card p-5 space-y-4"
     >
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-lg">🔊</span>
           <div>
-            <p className="text-sm font-bold text-zinc-300">
+            <p className="text-sm font-bold text-[--foreground]">
               Audio ({currentTrack + 1}/{texts.length})
             </p>
             <motion.p
@@ -153,7 +151,7 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
           <motion.div
             key={i}
             className={`flex-1 rounded-full transition-all ${
-              isPlaying ? 'bg-[--color-accent-blue]' : 'bg-zinc-700'
+              isPlaying ? 'bg-[--accent-cyan]' : 'bg-zinc-700'
             }`}
             animate={{
               height: isPlaying ? `${Math.random() * 80 + 20}%` : '15%',
@@ -176,8 +174,8 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
           whileTap={{ scale: 0.95 }}
           onClick={handlePrev}
           disabled={currentTrack === 0 || isLoading}
-          className={`p-3 rounded-xl bg-[--color-surface] border border-[--color-border] transition-colors ${
-            currentTrack === 0 || isLoading ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[--color-surface-hover]'
+          className={`p-3 rounded-xl bg-[--surface] border border-[--border] transition-colors ${
+            currentTrack === 0 || isLoading ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[--surface-hover]'
           }`}
         >
           <span className="text-lg">⏮</span>
@@ -188,8 +186,8 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
           whileTap={{ scale: 0.95 }}
           onClick={handlePlayPause}
           disabled={isLoading}
-          className={`p-4 rounded-xl bg-[--color-accent-blue] text-white font-bold shadow-lg shadow-blue-900/20 transition-all ${
-            isLoading ? 'opacity-60 cursor-wait' : 'hover:bg-blue-500'
+          className={`p-4 rounded-xl bg-[--accent-cyan] text-black font-bold shadow-lg shadow-cyan-900/20 transition-all ${
+            isLoading ? 'opacity-60 cursor-wait' : 'hover:opacity-90'
           }`}
         >
           {isPlaying ? '⏸' : '▶'}
@@ -200,8 +198,8 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
           whileTap={{ scale: 0.95 }}
           onClick={handleNext}
           disabled={currentTrack >= texts.length - 1 || isLoading}
-          className={`p-3 rounded-xl bg-[--color-surface] border border-[--color-border] transition-colors ${
-            currentTrack >= texts.length - 1 || isLoading ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[--color-surface-hover]'
+          className={`p-3 rounded-xl bg-[--surface] border border-[--border] transition-colors ${
+            currentTrack >= texts.length - 1 || isLoading ? 'opacity-30 cursor-not-allowed' : 'hover:bg-[--surface-hover]'
           }`}
         >
           <span className="text-lg">⏭</span>
@@ -216,7 +214,7 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
           exit={{ opacity: 0 }}
           className="text-xs text-center text-zinc-500"
         >
-          Generating audio...
+          Generating audio…
         </motion.p>
       )}
       
@@ -224,9 +222,9 @@ export default function AudioPlayer({ texts, autoPlay = false }: AudioPlayerProp
         <motion.span
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-xs text-[--color-accent-blue] font-medium"
+          className="text-xs text-[--accent-cyan] font-medium"
         >
-          Playing...
+          Playing…
         </motion.span>
       )}
     </motion.div>

@@ -11,7 +11,7 @@ export default function DebateTranscript({ rounds }: DebateTranscriptProps) {
   if (!rounds.length) {
     return (
       <div className="text-center text-zinc-600 py-8">
-        <p>Waiting for debate to start...</p>
+        <p>The arena is silent… for now.</p>
       </div>
     );
   }
@@ -26,19 +26,19 @@ export default function DebateTranscript({ rounds }: DebateTranscriptProps) {
           transition={{ delay: roundIndex * 0.1 }}
           className="space-y-4"
         >
-          {/* Round header */}
+          {/* Round header — oracle style */}
           <div className="flex items-center gap-3">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 200, delay: roundIndex * 0.1 }}
-              className={`text-2xl ${
-                roundIndex === 2 ? 'text-[--color-accent-gold]' : 'text-zinc-500'
+              className={`text-2xl font-black ${
+                roundIndex === rounds.length - 1 ? 'text-[--accent-gold]' : 'text-zinc-500'
               }`}
             >
               Round {round.round}
             </motion.div>
-            <div className="h-px flex-1 bg-[--color-border]/30" />
+            <div className="h-px flex-1 bg-gradient-to-r from-[--border] to-transparent" />
           </div>
 
           {/* Proponent */}
@@ -48,9 +48,9 @@ export default function DebateTranscript({ rounds }: DebateTranscriptProps) {
             transition={{ delay: roundIndex * 0.1 + 0.1 }}
             className="flex gap-4 group"
           >
-            <div className="flex-shrink-0 w-1 h-full bg-[--color-accent-green] rounded-full opacity-30 group-hover:opacity-60 transition-opacity" />
+            <div className="flex-shrink-0 w-1 h-full bg-[--accent-cyan] rounded-full opacity-30 group-hover:opacity-60 transition-opacity" />
             <div className="flex-1">
-              <h4 className="text-sm font-bold text-[--color-accent-green] mb-2 flex items-center gap-2">
+              <h4 className="text-sm font-bold text-[--accent-cyan] mb-2 flex items-center gap-2">
                 <span>⚔️</span> Proponent
               </h4>
               <p className="text-sm text-zinc-300 leading-relaxed">{round.proponentClaim}</p>
@@ -69,7 +69,7 @@ export default function DebateTranscript({ rounds }: DebateTranscriptProps) {
                       transition={{ delay: i * 0.1 }}
                       className="text-xs text-zinc-500 flex gap-1.5 items-start"
                     >
-                      <span className="text-[--color-accent-green] mt-0.5">▸</span>
+                      <span className="text-[--accent-cyan] mt-0.5">▸</span>
                       <span>{ev.point}</span>
                       {ev.source && (
                         <motion.span
@@ -95,9 +95,9 @@ export default function DebateTranscript({ rounds }: DebateTranscriptProps) {
             transition={{ delay: roundIndex * 0.1 + 0.2 }}
             className="flex gap-4 group"
           >
-            <div className="flex-shrink-0 w-1 h-full bg-[--color-accent-red] rounded-full opacity-30 group-hover:opacity-60 transition-opacity" />
+            <div className="flex-shrink-0 w-1 h-full bg-[--accent-magenta] rounded-full opacity-30 group-hover:opacity-60 transition-opacity" />
             <div className="flex-1">
-              <h4 className="text-sm font-bold text-[--color-accent-red] mb-2 flex items-center gap-2">
+              <h4 className="text-sm font-bold text-[--accent-magenta] mb-2 flex items-center gap-2">
                 <span>🛡️</span> Opponent
               </h4>
               <p className="text-sm text-zinc-300 leading-relaxed">{round.opponentClaim}</p>
@@ -116,7 +116,7 @@ export default function DebateTranscript({ rounds }: DebateTranscriptProps) {
                       transition={{ delay: i * 0.1 }}
                       className="text-xs text-zinc-500 flex gap-1.5 items-start"
                     >
-                      <span className="text-[--color-accent-red] mt-0.5">▸</span>
+                      <span className="text-[--accent-magenta] mt-0.5">▸</span>
                       <span>{ev.point}</span>
                       {ev.source && (
                         <motion.span

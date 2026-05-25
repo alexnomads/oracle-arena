@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { DEMO_TOPICS } from '@/lib/agents';
 import type { DebateTopic } from '@/types/debate';
@@ -26,7 +27,6 @@ export default function TopicsPage() {
   const [customQuestion, setCustomQuestion] = useState('');
   const [customCategory, setCustomCategory] = useState<'crypto' | 'geopolitics' | 'stocks' | 'ai' | 'custom'>('custom');
 
-  // Simulated debate stats for each topic
   const debateStats: Record<string, { count: number; popularity: number }> = {
     'btc-100k-june': { count: 47, popularity: 92 },
     'fed-rate-cut-june': { count: 31, popularity: 78 },
@@ -36,7 +36,6 @@ export default function TopicsPage() {
     'trump-2028': { count: 38, popularity: 85 },
   };
 
-  // Filter topics
   const filteredTopics = topics.filter((topic) => {
     const matchesSearch = topic.question.toLowerCase().includes(search.toLowerCase());
     const matchesCategory = category === 'all' || topic.category === category;
@@ -54,7 +53,6 @@ export default function TopicsPage() {
     setTopics((prev) => [newTopic, ...prev]);
     setCustomQuestion('');
     setShowCustomForm(false);
-    // Navigate to the new debate
     router.push(`/debate/${newTopic.id}`);
   };
 
@@ -66,34 +64,45 @@ export default function TopicsPage() {
       transition={{ duration: 0.4 }}
     >
       {/* Nav */}
-      <nav className="w-full border-b border-[--color-border] bg-[--color-background]/80 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="w-full border-b border-[--border] bg-[--background]/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="text-sm font-bold text-zinc-300 hover:text-white transition-colors">
-            ← Oracle Arena
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-8 h-8 flex-shrink-0">
+              <Image src="/oracle-arena-icon.png" alt="Oracle Arena" fill className="object-contain" />
+            </div>
+            <span className="text-sm font-bold text-[--foreground] group-hover:text-[--accent-cyan] transition-colors">
+              Oracle Arena
+            </span>
           </Link>
           <div className="flex items-center gap-4">
-            <Link href="/" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+            <Link href="/" className="text-xs text-zinc-500 hover:text-[--accent-cyan] transition-colors">
               Home
             </Link>
-            <Link href="/betting" className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+            <Link href="/betting" className="text-xs text-zinc-500 hover:text-[--accent-gold] transition-colors">
               Betting Arena
             </Link>
           </div>
         </div>
       </nav>
+
       {/* Hero */}
-      <section className="w-full px-6 py-16 text-center border-b border-[--color-border]">
+      <section className="w-full px-6 py-16 text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <div className="absolute top-1/4 right-1/4 w-72 h-72 rounded-full border border-[--accent-magenta]" />
+          <div className="absolute bottom-1/3 left-1/3 w-56 h-56 rounded-full border border-[--accent-cyan]" />
+        </div>
         <motion.h1
-          className="text-5xl md:text-6xl font-black tracking-tight mb-3"
+          className="text-5xl md:text-7xl font-black tracking-tight mb-3 relative text-white"
+          style={{ textShadow: '0 0 40px rgba(0, 240, 255, 0.2)' }}
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
         >
-          <span className="bg-gradient-to-r from-[--accent-green] via-[--accent-blue] to-[--accent-gold] bg-clip-text text-transparent">
-            Debate Topics
+          <span className="bg-gradient-to-r from-[--accent-cyan] via-[--accent-white] to-[--accent-magenta] bg-clip-text text-transparent">
+            DEBATE TOPICS
           </span>
         </motion.h1>
         <motion.p
-          className="text-lg text-zinc-400 max-w-lg mx-auto"
+          className="text-lg text-zinc-400 max-w-lg mx-auto relative"
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.1 }}
@@ -113,10 +122,10 @@ export default function TopicsPage() {
         >
           <input
             type="text"
-            placeholder="Search topics..."
+            placeholder="Search topics…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-[--color-surface] border border-[--color-border] rounded-xl px-5 py-3.5 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
+            className="w-full bg-[--surface] border border-[--border] rounded-xl px-5 py-3.5 text-[--foreground] placeholder-zinc-500 focus:outline-none focus:border-[--accent-cyan]/50 transition-colors"
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500">🔍</span>
         </motion.div>
@@ -134,8 +143,8 @@ export default function TopicsPage() {
               onClick={() => setCategory(cat)}
               className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                 category === cat
-                  ? 'bg-[--color-accent-blue] text-white shadow-lg shadow-blue-900/20'
-                  : 'bg-[--color-surface] text-zinc-400 border border-[--color-border] hover:border-zinc-500'
+                  ? 'bg-[--accent-cyan] text-black shadow-lg shadow-cyan-900/20'
+                  : 'bg-[#251740] text-zinc-400 border border-[--border] hover:border-[--accent-cyan]/30'
               }`}
             >
               {cat === 'all' ? '🎯 All' : `${CATEGORY_LABELS[cat]?.emoji || ''} ${cat.charAt(0).toUpperCase() + cat.slice(1)}`}
@@ -151,7 +160,7 @@ export default function TopicsPage() {
         >
           <button
             onClick={() => setShowCustomForm(!showCustomForm)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[--accent-green]/20 to-[--accent-blue]/20 border border-[--accent-green]/30 text-[--accent-green] font-semibold hover:from-[--accent-green]/30 hover:to-[--accent-blue]/30 transition-all"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[--accent-cyan]/10 border border-[--accent-cyan]/30 text-[--accent-cyan] font-semibold hover:bg-[--accent-cyan]/20 transition-all"
           >
             <span className="text-lg">{showCustomForm ? '✕' : '➕'}</span>
             {showCustomForm ? 'Cancel' : 'Create Custom Topic'}
@@ -167,13 +176,13 @@ export default function TopicsPage() {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="bg-[--color-surface] border border-[--color-border] rounded-xl p-6 space-y-4">
+              <div className="oracle-card p-6 space-y-4">
                 <input
                   type="text"
                   placeholder="e.g. Will SpaceX launch a Mars mission by 2030?"
                   value={customQuestion}
                   onChange={(e) => setCustomQuestion(e.target.value)}
-                  className="w-full bg-[--color-background] border border-[--color-border] rounded-xl px-4 py-3 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-500 transition-colors"
+                  className="w-full bg-[--background] border border-[--border] rounded-xl px-4 py-3 text-[--foreground] placeholder-zinc-500 focus:outline-none focus:border-[--accent-cyan]/50 transition-colors"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') handleAddCustomTopic();
                   }}
@@ -187,8 +196,8 @@ export default function TopicsPage() {
                         onClick={() => setCustomCategory(cat)}
                         className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
                           customCategory === cat
-                            ? 'bg-[--color-accent-blue] text-white'
-                            : 'bg-[--color-background] text-zinc-400 border border-[--color-border]'
+                            ? 'bg-[--accent-cyan] text-black'
+                            : 'bg-[--background] text-zinc-400 border border-[--border]'
                         }`}
                       >
                         {CATEGORY_LABELS[cat]?.emoji} {cat}
@@ -201,11 +210,11 @@ export default function TopicsPage() {
                   disabled={!customQuestion.trim()}
                   className={`w-full py-3 rounded-xl font-bold transition-all ${
                     customQuestion.trim()
-                      ? 'bg-gradient-to-r from-[--accent-green] to-[--accent-blue] text-white hover:opacity-90'
-                      : 'bg-zinc-700 text-zinc-500 cursor-not-allowed'
+                      ? 'bg-gradient-to-r from-[--accent-gold] to-yellow-400 text-black hover:opacity-90 glow-gold'
+                      : 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
                   }`}
                 >
-                  🚀 Start Debate
+                  ⚡ Start Debate
                 </button>
               </div>
             </motion.div>
@@ -224,7 +233,7 @@ export default function TopicsPage() {
         {filteredTopics.length === 0 ? (
           <div className="text-center py-20 text-zinc-500">
             <p className="text-4xl mb-3">🔍</p>
-            <p>No topics found. Try a different search or create one.</p>
+            <p>The arena is silent… for now.</p>
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
@@ -236,9 +245,9 @@ export default function TopicsPage() {
       </div>
 
       {/* Footer */}
-      <footer className="mt-auto w-full border-t border-[--color-border] py-8 text-center">
+      <footer className="mt-auto w-full border-t border-[--border] py-8 text-center">
         <p className="text-sm text-zinc-600">
-          <Link href="/" className="hover:text-zinc-400 transition-colors">← Back to Home</Link>
+          <Link href="/" className="hover:text-[--accent-cyan] transition-colors">← Back to Home</Link>
           {' · '}Built for Venice AI Hackathon
         </p>
       </footer>
@@ -252,7 +261,7 @@ function TopicCard({ topic, index, stats }: { topic: DebateTopic; index: number;
   return (
     <Link
       href={`/debate/${topic.id}`}
-      className="group relative block rounded-xl border border-[--color-border] bg-[--color-surface] p-5 transition-all hover:border-zinc-500 hover:bg-[--color-surface-hover]"
+      className="group relative block oracle-card p-5 transition-all"
     >
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -260,32 +269,32 @@ function TopicCard({ topic, index, stats }: { topic: DebateTopic; index: number;
         transition={{ delay: 0.05 * index }}
       >
         <div className="flex items-start justify-between mb-3">
-          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#1a1a23] text-zinc-400 border border-[--color-border]">
+          <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#251740]/80 text-[--accent-cyan] border border-[--accent-cyan]/20">
             <span>{catInfo.emoji}</span>
             {catInfo.label}
           </span>
           {topic.cached ? (
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[--accent-green]/10 text-[--accent-green] border border-[--accent-green]/20">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[--accent-gold]/10 text-[--accent-gold] border border-[--accent-gold]/20">
               CACHED
             </span>
           ) : (
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-zinc-700/50 text-zinc-500 border border-zinc-600/30">
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[--accent-cyan]/10 text-[--accent-cyan] border border-[--accent-cyan]/20">
               LIVE
             </span>
           )}
         </div>
-        <h3 className="text-base font-bold leading-snug group-hover:text-white transition-colors mb-3">
+        <h3 className="text-base font-bold leading-snug group-hover:text-white transition-colors mb-3 text-[--foreground]">
           {topic.question}
         </h3>
-        <div className="flex items-center gap-2 text-xs text-zinc-500 pt-3 border-t border-[--color-border]/50">
-          <span>⚡ Start debate</span>
+        <div className="flex items-center gap-2 text-xs text-zinc-500 pt-3 border-t border-[--border]/50">
+          <span className="text-[--accent-cyan]">⚡ Start debate</span>
           {stats && (
             <div className="flex items-center gap-2 ml-auto">
               <span className="text-zinc-600">{stats.count} debates</span>
               <div className="flex items-center gap-1">
-                <div className="w-8 h-1 bg-zinc-700 rounded-full overflow-hidden">
+                <div className="w-8 h-1 bg-[#251740] rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-gradient-to-r from-[--accent-green] to-[--accent-blue] rounded-full" 
+                    className="h-full bg-gradient-to-r from-[--accent-cyan] to-[--accent-magenta] rounded-full" 
                     style={{ width: `${stats.popularity}%` }}
                   />
                 </div>
