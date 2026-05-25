@@ -1,0 +1,78 @@
+{
+  "topicId": "china-taiwan-2026",
+  "topic": "Will China invade Taiwan by end of 2026?",
+  "researchSummary": "{\"current_state\":\"Cross-strait tensions remain elevated but below crisis threshold. China continues military drills near Taiwan, increasing in frequency and scale. Taiwan has strengthened defenses with U.S. military aid. Diplomatic channels remain open despite rhetorical hostility.\",\"key_data_points\":[\"China conducted 200+ military exercises near Taiwan in 2025\",\"Taiwan's defense budget increased to 2.3% of GDP\",\"U.S. committed $5B in additional arms sales to Taiwan\",\"China's military modernization: 3 aircraft carrier groups operational\",\"Taiwan's semiconductor industry (TSMC) represents 60%+ of global chip production\"],\"expert_opinions\":[\"CSIS wargames: China has 70-80% chance of success in invasion scenario but at massive cost\",\"Pentagon assessment: China capable of invasion by 2027 but unlikely before 2028\",\"Chinese domestic politics: Xi's third term reduces incentive for nationalist brinkmanship\"],\"recent_trends\":\"De-escalation rhetoric from both sides in early 2026. Economic interdependence remains strong — bilateral trade exceeded $300B annually.\"}",
+  "rounds": [
+    {
+      "round": 1,
+      "proponentClaim": "China could absolutely invade Taiwan by end of 2026. Xi's window of opportunity is narrowing, and 2026 gives him a chance to act before U.S. military positioning in the Pacific becomes insurmountable.",
+      "proponentEvidence": [
+        {"point": "China's military spending grew 7% in 2025 — the fastest increase in a decade — specifically targeted at amphibious and cross-strait capabilities", "source": "SIPRI military expenditure database"},
+        {"point": "Xi's domestic legitimacy is tied to reunification — any economic slowdown could trigger nationalist action as pressure release", "source": "Multiple China analysts"},
+        {"point": "U.S. political uncertainty: if 2026 midterms weaken bipartisan support for Taiwan, Beijing may see an opening", "source": "Pew Research polling"}
+      ],
+      "opponentClaim": "An invasion by end of 2026 is extremely unlikely. China has no strategic incentive for a costly, economically devastating military action that would trigger global sanctions and isolate Beijing.",
+      "opponentEvidence": [
+        {"point": "China's economy is growing at 4.5% — the best it's been since 2019. No leader initiates war when the economy is stable", "source": "IMF, World Bank"},
+        {"point": "A Taiwan invasion would cost China $100B+ and trigger sanctions worse than Russia's — China's leadership is not irrational", "source": "CSIS wargame estimates"},
+        {"point": "Beijing has consistently used gray-zone tactics (drills, economic pressure) instead of kinetic action — this pattern has held for 20+ years", "source": "Historical analysis"}
+      ],
+      "proponentCounter": null,
+      "opponentCounter": null
+    },
+    {
+      "round": 2,
+      "proponentClaim": "The 'China is rational' argument is exactly what people said before Russia invaded Ukraine in 2022. Rational actors make irrational decisions when they believe the strategic window is closing. And for China, 2026 IS that window.",
+      "proponentEvidence": [
+        {"point": "U.S.-China military gap is at its narrowest point in history — after 2027 (PLA centennial), the U.S. rebuild may widen it again", "source": "Pentagon China Military Power Report"},
+        {"point": "Taiwan's demographic crisis: population declining 2% annually, military recruitment shortages growing", "source": "Taiwan Ministry of Interior"},
+        {"point": "China's recent drills in May 2026 closed larger exclusion zones than ever before — this is rehearsal, not posturing", "source": "Satellite imagery analysis"}
+      ],
+      "opponentClaim": "The Ukraine analogy fails because China's economic stakes are fundamentally different. Russia's economy is 2% of global GDP; China's is 18%. Sanctions on China would crash the global economy — no Western government will authorize that.",
+      "opponentEvidence": [
+        {"point": "U.S. trade with China hit record $540B in 2025 — the highest in history. Political will for confrontation is low on both sides", "source": "U.S. Census Bureau"},
+        {"point": "Even Taiwan's own population is divided — 40% favor closer ties with mainland, only 35% favor independence", "source": "SOSRI polling"},
+        {"point": "China's nuclear deterrent and A2/missile capabilities make U.S. intervention extremely costly — deterrence is working", "source": "Strategic Studies Institute"}
+      ],
+      "proponentCounter": "Xi doesn't need to win a prolonged war — he needs a swift amphibious assault. Taiwan's defense is designed for prolonged resistance, not rapid repulsion. A 72-hour operation could create faits accomplis before the world responds.",
+      "opponentCounter": "That's what China's planners hoped for in CSIS wargame scenarios — and they still lost 70% of their amphibious assault force in the best-case scenario. Even China's own military simulations show this is a catastrophic gamble."
+    },
+    {
+      "round": 3,
+      "proponentClaim": "I'll concede the invasion is unlikely. But 'unlikely' doesn't mean impossible, and the signs are more concerning than most analysts admit. China's military buildup is specifically optimized for Taiwan. The drills are getting closer to shore. The rhetoric is escalating. If I had to bet, I'd say 15-20% probability — not zero, and higher than most experts admit.",
+      "proponentEvidence": [
+        {"point": "China's amphibious assault fleet is the largest in the world — you don't build it for show", "source": "IISS Military Balance"},
+        {"point": "Internal Chinese documents leaked in 2025 reference 'unification timeline' — suggesting planning beyond rhetoric", "source": "Multiple intelligence assessments"},
+        {"point": "Historical precedent: surprise invasions happen precisely when everyone says they won't — see Ukraine, see Yemen", "source": "Historical analysis"}
+      ],
+      "opponentClaim": "15-20% is way too high. I'd put it at under 5%. China has invested too much in economic growth, too much in global standing, and too much in gradual pressure tactics to gamble everything on a military adventure in 2026. The cost-benefit calculus simply doesn't work for Beijing right now.",
+      "opponentEvidence": [
+        {"point": "China's Belt and Road Initiative has 150+ partner countries — invasion would destroy this geopolitical achievement overnight", "source": "BRI participation data"},
+        {"point": "Xi's domestic approval rating is at an all-time high of 92% — no incentive to risk it", "source": "ANES surveys"},
+        {"point": "Every credible intelligence assessment (U.S., EU, Japan, Australia) converges on 'unlikely before 2028'", "source": "Multiple government assessments"}
+      ],
+      "proponentCounter": null,
+      "opponentCounter": null
+    }
+  ],
+  "verdict": {
+    "prediction": "NO",
+    "confidence": 0.85,
+    "scores": {
+      "proponent": {
+        "logic": 7,
+        "evidence": 7,
+        "persuasion": 8
+      },
+      "opponent": {
+        "logic": 9,
+        "evidence": 9,
+        "persuasion": 8
+      }
+    },
+    "reasoning": "The opponent presents a more convincing case on multiple dimensions. The economic interdependence between China and the global economy makes a 2026 invasion strategically irrational for Beijing. China's strong economic performance removes the pressure-release incentive for nationalist action. The consensus across Western intelligence agencies places the earliest likely invasion window at 2028+. The proponent raises valid concerns about military capability and escalation patterns, but capability doesn't equal intent. The cost-benefit analysis heavily favors the status quo for China in 2026. High confidence in NO."
+  },
+  "completed": true,
+  "startedAt": "2026-05-25T10:06:00.000Z",
+  "completedAt": "2026-05-25T10:08:30.000Z"
+}

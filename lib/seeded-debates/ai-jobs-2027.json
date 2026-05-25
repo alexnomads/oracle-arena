@@ -1,0 +1,78 @@
+{
+  "topicId": "ai-jobs-2027",
+  "topic": "Will AI cause net job losses in tech by 2027?",
+  "researchSummary": "{\"current_state\":\"AI is actively transforming the tech labor market. Companies are integrating AI coding assistants (GitHub Copilot, Cursor, Claude) at scale. Early data shows mixed results — some roles being eliminated while new AI-adjacent roles emerge.\",\"key_data_points\":[\"GitHub Copilot users code 55% faster on average\",\"Tech layoffs in 2025-2026: ~50,000 jobs cut, with 'AI replacement' cited in ~15% of cases\",\"New AI roles created: prompt engineers, AI trainers, ML ops — estimated 100,000+ new positions\",\"Entry-level coding jobs declining 20-30% at major tech firms\",\"AI tool market expected to reach $100B+ by 2030\"],\"expert_opinions\":[\"Andreessen Horowitz: 'AI will augment more jobs than it replaces in the next 3 years'\",\"McKinsey: 15-25% of tech tasks automatable by 2027, but net job impact unclear\",\"OpenAI research: Suggests 20-30% of knowledge work could be automated within 5 years\"],\"recent_trends\":\"Shift from 'AI will create jobs' optimism to more nuanced 'AI will transform jobs' reality. Companies experimenting with smaller, AI-augmented teams.\"}",
+  "rounds": [
+    {
+      "round": 1,
+      "proponentClaim": "Yes, AI will cause NET job losses in tech by 2027. The displacement curve is already visible — entry-level developer roles are the first to go, and the replacement hiring simply isn't keeping pace.",
+      "proponentEvidence": [
+        {"point": "Major tech companies reduced junior developer hiring by 30-40% in 2025 as AI tools handled routine coding tasks", "source": "Levels.fyi hiring report 2025"},
+        {"point": "AI-generated code now represents 40-60% of new codebases at companies using Copilot/Cursor at scale", "source": "GitHub internal data"},
+        {"point": "QA/testing roles — traditionally a large hiring category — are being automated at 60%+ rates", "source": "Multiple company layoff announcements"}
+      ],
+      "opponentClaim": "No. AI creates more tech jobs than it destroys. Every major technology shift — from compilers to cloud — followed the same pattern: temporary disruption, then net growth.",
+      "opponentEvidence": [
+        {"point": "The AI industry itself hired 80,000+ people in 2025 — ML engineers, data scientists, AI safety researchers", "source": "Bureau of Labor Statistics"},
+        {"point": "Cloud computing eliminated sysadmin roles but created 5x more DevOps/cloud engineering positions — same pattern will repeat", "source": "Historical labor data"},
+        {"point": "AI tools increase productivity, which means companies can afford LARGER engineering teams, not smaller ones", "source": "Economic theory, multiple empirical studies"}
+      ],
+      "proponentCounter": null,
+      "opponentCounter": null
+    },
+    {
+      "round": 2,
+      "proponentClaim": "The 'cloud computing analogy' is wrong this time. Cloud required human operators — AI REPLACES human operators. That's the fundamental difference. We're not augmenting humans; we're making them redundant for entire categories of work.",
+      "proponentEvidence": [
+        {"point": "AI can now write, test, deploy, and debug code with minimal human oversight — the entire SDLC is being automated, not just parts of it", "source": "Multiple AI coding benchmark results"},
+        {"point": "Companies like GitLab and Zapier have already shipped products with teams of 2-3 people using AI — this model scales", "source": "Public case studies"},
+        {"point": "The 'new AI jobs' argument is circular — those jobs are a fraction of what's being displaced and require specialized skills most displaced workers don't have", "source": "Labor market analysis"}
+      ],
+      "opponentClaim": "You're confusing 'can AI do it' with 'will companies let AI do it alone'. The legal, security, and accountability barriers to fully autonomous AI coding are enormous. Companies need humans in the loop — that's not changing by 2027.",
+      "opponentEvidence": [
+        {"point": "AI-generated code has 20-30% more bugs in production than human-written code without review — companies can't go fully autonomous", "source": "Multiple peer-reviewed studies"},
+        {"point": "Liability and compliance: financial, healthcare, and government tech require human accountability — this is a massive segment of tech employment", "source": "Regulatory frameworks"},
+        {"point": "The skills gap argument cuts both ways — the AI job market has 500,000+ unfilled positions because there aren't enough qualified people", "source": "Indeed, LinkedIn job data"}
+      ],
+      "proponentCounter": "Those 'human in the loop' roles are still FEWER roles. One senior engineer reviewing AI output replaces 3-5 junior engineers doing the original work. Net loss.",
+      "opponentCounter": "That assumes a 1:3 ratio holds across all tech sectors. It doesn't. Creative tech, product management, UX, infrastructure, security — these roles are being EXPANDED by AI, not compressed."
+    },
+    {
+      "round": 3,
+      "proponentClaim": "By 2027, the displacement will be measurable and net negative. The data from 2025-2026 is clear: tech hiring growth has slowed to near-zero while AI adoption has accelerated. The lag between job destruction and job creation is 2-3 years minimum. By 2027, we'll still be in the destruction phase.",
+      "proponentEvidence": [
+        {"point": "Tech job postings declined 15% YoY in early 2026 — the first decline since 2008", "source": "Indeed Hiring Lab"},
+        {"point": "Average tech team size at Fortune 500 companies declined 8% in 2025", "source": "Gartner"},
+        {"point": "Even AI companies are lean — OpenAI, Anthropic, Google DeepMind have relatively small engineering teams compared to output", "source": "Company disclosures"}
+      ],
+      "opponentClaim": "2027 is simply too soon for net losses. The transition period means companies are HIRING for AI while PHASING OUT legacy roles — the overlap means net growth. Look at the data: tech employment grew 2.1% in 2025 despite all the AI hype. The real disruption hits in 2028-2030, not 2027.",
+      "opponentEvidence": [
+        {"point": "U.S. tech employment grew from 8.2M to 8.4M in 2025 — net positive despite AI integration", "source": "BLS data"},
+        {"point": "AI adoption curve follows S-curve: early adopters in 2025-2026, mainstream in 2028+ — 2027 is the inflection, not the impact", "source": "Gartner Hype Cycle"},
+        {"point": "Government and enterprise tech — the slowest to adopt — represent 40% of tech jobs and won't feel AI displacement until 2028+", "source": "Enterprise IT spending reports"}
+      ],
+      "proponentCounter": null,
+      "opponentCounter": null
+    }
+  ],
+  "verdict": {
+    "prediction": "NO",
+    "confidence": 0.55,
+    "scores": {
+      "proponent": {
+        "logic": 9,
+        "evidence": 8,
+        "persuasion": 9
+      },
+      "opponent": {
+        "logic": 8,
+        "evidence": 9,
+        "persuasion": 7
+      }
+    },
+    "reasoning": "This is a close call. The proponent makes a compelling case about the unique nature of AI displacement vs. historical tech shifts. However, the opponent's evidence on actual employment data is decisive — tech employment is still growing in 2025-2026, and 2027 is likely too soon for net losses to materialize. The transition overlap period, slow enterprise adoption, and new AI-adjacent job creation should keep net employment positive through 2027. The proponent's case is stronger for 2028-2030. I'm giving the edge to the opponent on evidence (hard data vs. projections) and the proponent on persuasion (more emotionally compelling narrative)."
+  },
+  "completed": true,
+  "startedAt": "2026-05-25T10:03:00.000Z",
+  "completedAt": "2026-05-25T10:05:30.000Z"
+}

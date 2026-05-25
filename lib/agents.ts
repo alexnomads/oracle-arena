@@ -66,20 +66,8 @@ Rules:
  */
 export const DEMO_TOPICS = [
   {
-    id: 'btc-100k-june',
-    question: 'Will BTC exceed $100K by June 30, 2026?',
-    category: 'crypto' as const,
-    cached: true,
-  },
-  {
-    id: 'fed-rate-cut-june',
-    question: 'Will the Fed cut interest rates in June 2026?',
-    category: 'geopolitics' as const,
-    cached: true,
-  },
-  {
-    id: 'eth-etf-approval',
-    question: 'Will a spot ETH ETF be approved in the EU by Q3 2026?',
+    id: 'eth-5k-2026',
+    question: 'Will ETH exceed $5,000 by end of 2026?',
     category: 'crypto' as const,
     cached: true,
   },
@@ -87,6 +75,30 @@ export const DEMO_TOPICS = [
     id: 'ai-jobs-2027',
     question: 'Will AI cause net job losses in tech by 2027?',
     category: 'ai' as const,
+    cached: true,
+  },
+  {
+    id: 'china-taiwan-2026',
+    question: 'Will China invade Taiwan by end of 2026?',
+    category: 'geopolitics' as const,
+    cached: true,
+  },
+  {
+    id: 'btc-100k-june',
+    question: 'Will BTC exceed $100K by June 30, 2026?',
+    category: 'crypto' as const,
+    cached: false,
+  },
+  {
+    id: 'fed-rate-cut-june',
+    question: 'Will the Fed cut interest rates in June 2026?',
+    category: 'geopolitics' as const,
+    cached: false,
+  },
+  {
+    id: 'eth-etf-approval',
+    question: 'Will a spot ETH ETF be approved in the EU by Q3 2026?',
+    category: 'crypto' as const,
     cached: false,
   },
   {

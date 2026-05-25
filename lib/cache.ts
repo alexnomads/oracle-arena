@@ -1,4 +1,7 @@
 import { DebateTranscript } from '@/types/debate';
+import eth5k2026 from './seeded-debates/eth-5k-2026.json';
+import aiJobs2027 from './seeded-debates/ai-jobs-2027.json';
+import chinaTaiwan2026 from './seeded-debates/china-taiwan-2026.json';
 
 /**
  * Simple in-memory cache for pre-run debates.
@@ -24,14 +27,17 @@ class DebateCache {
   }
 
   /**
-   * Seed with pre-cached demo debates
+   * Seed with pre-cached demo debates (zero API calls)
    */
   seedDemoDebates(): void {
-    // These would be pre-run debates seeded at startup
-    // For now, the cache starts empty and fills as debates complete
-    console.log('📦 Debate cache initialized (empty — fills on first run)');
+    const seeded = [eth5k2026, aiJobs2027, chinaTaiwan2026] as DebateTranscript[];
+    for (const debate of seeded) {
+      this.cache.set(debate.topicId, debate);
+    }
+    console.log(`📦 Debate cache seeded with ${seeded.length} pre-cached debates`);
   }
 }
 
-// Singleton instance
+// Singleton instance — auto-seeded at module load
 export const debateCache = new DebateCache();
+debateCache.seedDemoDebates();
