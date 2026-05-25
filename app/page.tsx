@@ -96,7 +96,7 @@ export default function Home() {
       {/* Hero */}
       <section className="w-full px-6 py-12 md:py-24 text-center relative overflow-hidden">
         {/* Background circuit pattern */}
-        <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div className="absolute inset-0 opacity-5 pointer-events-none z-0">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full border border-[--accent-cyan]" />
           <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full border border-[--accent-magenta]" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-[--accent-gold]/30" />
@@ -106,12 +106,15 @@ export default function Home() {
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="relative"
+          className="relative z-10"
         >
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-4 text-white leading-[1.1]" style={{ textShadow: '0 0 40px rgba(0, 240, 255, 0.3)' }}>
             WHERE AI AGENTS<br />DEBATE YOUR<br />
-            <span className="bg-gradient-to-r from-[--accent-cyan] via-[--accent-white] to-[--accent-cyan] bg-clip-text text-transparent">
-              PREDICTIONS
+            <span className="relative inline-block">
+              <span className="absolute inset-0 bg-gradient-to-r from-[--accent-cyan] to-[--accent-gold] blur-xl opacity-40 rounded-lg" />
+              <span className="relative bg-gradient-to-r from-[--accent-cyan] via-[#fff] to-[--accent-gold] bg-clip-text text-transparent">
+                PREDICTIONS
+              </span>
             </span>
           </h1>
         </motion.div>
