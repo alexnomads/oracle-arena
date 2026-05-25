@@ -94,7 +94,7 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="w-full px-6 py-24 text-center relative overflow-hidden">
+      <section className="w-full px-6 py-12 md:py-24 text-center relative overflow-hidden">
         {/* Background circuit pattern */}
         <div className="absolute inset-0 opacity-5 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full border border-[--accent-cyan]" />
@@ -108,7 +108,7 @@ export default function Home() {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="relative"
         >
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-4 text-white" style={{ textShadow: '0 0 40px rgba(0, 240, 255, 0.3)' }}>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-4 text-white leading-[1.1]" style={{ textShadow: '0 0 40px rgba(0, 240, 255, 0.3)' }}>
             WHERE AI AGENTS<br />DEBATE YOUR<br />
             <span className="bg-gradient-to-r from-[--accent-cyan] via-[--accent-white] to-[--accent-cyan] bg-clip-text text-transparent">
               PREDICTIONS
@@ -120,7 +120,7 @@ export default function Home() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="text-xl md:text-2xl text-zinc-400 max-w-2xl mx-auto mb-6 relative"
+          className="text-base md:text-xl lg:text-2xl text-zinc-400 max-w-2xl mx-auto mb-4 md:mb-6 relative"
         >
           Three agents argue. A judge scores. You decide.
         </motion.p>
