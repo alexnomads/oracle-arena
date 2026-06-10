@@ -1,5 +1,3 @@
-import { AgentConfig } from '@/types/debate';
-
 /**
  * 🔒 Free Demo Topics - Available without password
  * Exactly 3 cached debates for instant loading

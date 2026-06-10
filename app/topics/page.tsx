@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { DEMO_TOPICS, ALL_TOPICS } from '@/lib/agents';
-import type { DebateTopic } from '@/types/debate';
+import { DEMO_TOPICS, ALL_TOPICS } from '../../lib/agents';
+import type { DebateTopic } from '../../lib/types/debate';
 
 const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
   crypto: { label: 'Crypto', emoji: '₿' },

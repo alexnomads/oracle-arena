@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { DEMO_TOPICS } from '@/lib/agents';
-import type { DebateTopic } from '@/types/debate';
+import { DEMO_TOPICS } from '../lib/agents';
+import type { DebateTopic } from '../lib/types/debate';
 
 const CATEGORY_LABELS: Record<string, string> = {
   crypto: '₿ Crypto',
