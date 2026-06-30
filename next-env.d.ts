@@ -14,5 +14,5 @@ declare global {
     env: ProcessEnv;
   }
 }
-.
+
 export {};
